@@ -1,0 +1,31 @@
+/* Táblázat formázása */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+thead {
+    background-color: #cccccc; /* Fejléc háttérszíne */
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #f2f2f2; /* Páratlan sorok háttérszíne */
+}
+
+tbody tr:nth-child(even) {
+    background-color: #e6e6e6; /* Páros sorok háttérszíne */
+}
+
+td, th {
+    border: 1px solid black;
+    padding: 10px;
+}
+
+/* Űrlap validációs hibaüzenetek */
+.error {
+    color: red;
+    padding: 5px;
+    margin-top: 5px;
+  
+}
