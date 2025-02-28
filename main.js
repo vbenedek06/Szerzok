@@ -174,3 +174,79 @@ function generatefrom() {
 }
 
 document.body.appendChild(generatefrom());
+
+// Commit 3: Táblázat generálása: Fejléc és adatsorok dinamikus renderelése
+
+function generateTableHeader(headerData, table) {
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+
+    // "Szerző neve" fejléc cella
+    const thSzerzo = document.createElement('th');
+    thSzerzo.textContent = headerData.szerzo;
+    headerRow.appendChild(thSzerzo);
+
+    // "Csapat" fejléc cella
+    const thCsapat = document.createElement('th');
+    thCsapat.textContent = headerData.csapat;
+    headerRow.appendChild(thCsapat);
+
+    // "Művei" fejléc cella (colSpan=2)
+    const thMuvei = document.createElement('th');
+    thMuvei.textContent = headerData.mu1;
+    thMuvei.colSpan = 2;
+    headerRow.appendChild(thMuvei);
+
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+}
+
+function generateTable(table, data) {
+    // Korábbi tartalom törlése
+    table.innerHTML = "";
+
+    // Fejléc létrehozása (az első elem tartalmazza a fejléc adatait)
+    generateTableHeader(data[0], table);
+
+    // Táblázat törzsének létrehozása
+    const tbody = document.createElement('tbody');
+    table.appendChild(tbody);
+
+    // Adatsorok bejárása (az első elemet kivéve)
+    for (let i = 1; i < data.length; i++) {
+        const rowData = data[i];
+        const row = document.createElement('tr');
+
+        // Szerző neve cella
+        const tdSzerzo = document.createElement('td');
+        tdSzerzo.textContent = rowData.szerzo;
+        row.appendChild(tdSzerzo);
+
+        // Csapat cella
+        const tdCsapat = document.createElement('td');
+        tdCsapat.textContent = rowData.csapat;
+        row.appendChild(tdCsapat);
+
+        // Művei: ellenőrizzük, hogy van-e második mű (mu2)
+        if (rowData.mu2 === "") {
+            // Ha nincs második mű, akkor egy cellában jelenítjük meg a mu1 értéket (colSpan=2)
+            const tdMuvei = document.createElement('td');
+            tdMuvei.textContent = rowData.mu1;
+            tdMuvei.colSpan = 2;
+            row.appendChild(tdMuvei);
+        } else {
+            // Ha mindkét mű meg van adva, két külön cellában jelenítjük meg őket
+            const tdMu1 = document.createElement('td');
+            tdMu1.textContent = rowData.mu1;
+            row.appendChild(tdMu1);
+
+            const tdMu2 = document.createElement('td');
+            tdMu2.textContent = rowData.mu2;
+            row.appendChild(tdMu2);
+        }
+        tbody.appendChild(row);
+    }
+}
+
+// Kezdetben kirajzoljuk a táblázatot
+generateTable(table, tableData);
