@@ -250,3 +250,103 @@ function generateTable(table, data) {
 
 // Kezdetben kirajzoljuk a táblázatot
 generateTable(table, tableData);
+
+// Commit 4: Űrlap eseménykezelése és validáció: Új adatok hozzáadása a táblázathoz
+
+const form = document.getElementById('form');
+// Űrlap eseménykezelője: új adatsor hozzáadása
+form.addEventListener('submit', function (e) {
+    e.preventDefault(); // Megakadályozza az űrlap alapértelmezett elküldését
+
+    // Az űrlap elemeinek lekérése
+    const szerzoHtmlElement = document.getElementById('szerzo_nev');  
+    const csapatHtmlElement = document.getElementById('group');      
+    const mu1HtmlElement = document.getElementById('mu1');              
+    const masodikHtmlElement = document.getElementById('masodik');      
+    const mu2HtmlElement = document.getElementById('mu2');             
+
+    // Az űrlap mezőinek értékeinek lekérése
+    const szerzo = szerzoHtmlElement.value;      
+    const csapat = csapatHtmlElement.value;       
+    const mu1 = mu1HtmlElement.value;               
+    let mu2 = mu2HtmlElement.value; // let, mert esetleg módosítjuk később
+
+    let valid = true; // valid változó kezdeti értéke: true
+    if (!simpleValidation(szerzoHtmlElement, "A szerző neve kitöltése kötelező")) {
+        valid = false;
+    }
+    if (!simpleValidation(csapatHtmlElement, "A csapat kitöltése kötelező")) {
+        valid = false;
+    }
+    if (!simpleValidation(mu1HtmlElement, "Az első mű megadása kötelező")) {
+        valid = false;
+    }
+    if (!secondValidation(masodikHtmlElement, mu2HtmlElement)) {
+        valid = false;
+    }
+    if (!valid) {
+        return; // Ha valamelyik kötelező mező üres, kilépünk
+    }
+
+    if (!masodikHtmlElement.checked) {
+        mu2 = "";
+    }
+
+    const newRow = {
+        szerzo: szerzo,
+        csapat: csapat,
+        mu1: mu1,
+        mu2: mu2
+    };
+    tableData.push(newRow);          
+    table.innerHTML = "";            
+    generateTable(table, tableData);                 
+    this.reset();                    
+});
+
+function simpleValidation(inputElem, errorMessage) {
+    let valid = true;
+    const parentElement = inputElem.parentElement;
+    let errorPlace = parentElement.querySelector('.error');
+    if (errorPlace) {
+        errorPlace.innerHTML = "";
+    }
+    if (inputElem.value.trim() === '') { 
+        if (errorPlace !== null) {
+            errorPlace.innerHTML = errorMessage;
+        } else {
+            const newError = document.createElement('div');
+            newError.className = 'error';
+            newError.innerHTML = errorMessage;
+            parentElement.appendChild(newError);
+        }
+        valid = false;
+    }
+    return valid;
+}
+
+function secondValidation(checkboxElement, mu2Element) {
+    let valid = true;
+
+    if (checkboxElement.checked) {
+        if (mu2Element.value.trim() === "") {
+            const errorMu2 = document.getElementById('error-mu2');
+            errorMu2.style.display = "block";
+            errorMu2.innerHTML = "A második mű megadása kötelező";
+            valid = false;
+        } else {
+            document.getElementById('error-mu2').style.display = "none";
+        }
+    } else {
+        if (mu2Element.value.trim() !== "") {
+            const errorCheckbox = document.getElementById('error-checkbox');
+            errorCheckbox.style.display = "block";
+            errorCheckbox.innerHTML = "Második mű megadásához kötelező bejelölni";
+            valid = false;
+        } else {
+            document.getElementById('error-checkbox').style.display = "none";
+        }
+        document.getElementById('error-mu2').style.display = "none";
+    }
+    return valid;
+}
